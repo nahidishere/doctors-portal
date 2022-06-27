@@ -1,5 +1,6 @@
 import { format } from 'date-fns';
 import React, { useEffect, useState } from 'react';
+import Loading from '../../Shared/Loading/Loading';
 import BookingModal from '../BookingModal/BookingModal';
 import Service from '../Service/Service';
 
@@ -7,10 +8,13 @@ const AvailableAppoints = ({ date }) => {
     const [services, setServices] = useState([]);
     const [treatment, setTreatment] = useState(null);
     useEffect(() => {
-        fetch("services.json")
+        fetch("https://doctors-portal2.herokuapp.com/services")
             .then(res => res.json())
             .then(data => setServices(data));
     }, [])
+    if (services.length === 0) {
+        return <Loading />
+    }
     return (
         <section className='my-6'>
             <h2 className="text-3xl text-secondary text-center">Available slots on {format(date, 'PP')}</h2>
