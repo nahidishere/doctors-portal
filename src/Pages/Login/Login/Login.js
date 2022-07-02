@@ -53,8 +53,8 @@ const Login = () => {
                     <div className="divider">Or</div>
                     <button onClick={() => signInWithGoogle()} className="btn btn-outline uppercase">Continue with Google</button>
                 </div>
-            </div>
-        </div>
+            </div >
+        </div >
     );
 };
 

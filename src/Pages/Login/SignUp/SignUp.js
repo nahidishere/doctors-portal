@@ -56,9 +56,9 @@ const SignUp = () => {
                     <p>Already have an account? <Link className='text-primary' to="/login">Login</Link></p>
                     <div className="divider">Or</div>
                     <button onClick={() => signInWithGoogle()} className="btn btn-outline uppercase">Continue with Google</button>
-                </div>
-            </div>
-        </div>
+                </div >
+            </div >
+        </div >
     );
 };
 

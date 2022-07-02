@@ -5,7 +5,7 @@ import auth from '../../../firebase.init';
 import Loading from '../../Shared/Loading/Loading';
 import { toast } from 'react-toastify';
 
-const BookingModal = ({ treatment, date, setTreatment }) => {
+const BookingModal = ({ treatment, date, setTreatment, refetch }) => {
     const { _id, name, slots } = treatment;
     const [user, loading, error] = useAuthState(auth);
     const formatedDate = format(date, 'PP');
@@ -16,7 +16,7 @@ const BookingModal = ({ treatment, date, setTreatment }) => {
             bookingId: _id,
             treatment: name,
             date: formatedDate,
-            slots,
+            slot,
             patient: user.email,
             patientName: user.displayName,
             phone: event.target.phone.value
@@ -36,18 +36,19 @@ const BookingModal = ({ treatment, date, setTreatment }) => {
                 else {
                     toast.error(`Already have and appointment on ${format(date, 'PP')} at ${slot}`)
                 }
-            })
-        setTreatment(null);
+                refetch();
+                setTreatment(null);
+            });
     }
     if (loading) {
         return <Loading />
     }
     return (
         <div>
-            <input type="checkbox" id="booking-form" className="modal-toggle" />
+            <input type="checkbox" idhtmlFor="booking-form" className="modal-toggle" />
             <div className="modal modal-bottom sm:modal-middle">
                 <div className="modal-box">
-                    <label htmlFor="booking-form" className="btn btn-sm btn-circle absolute right-2 top-2">✕</label>
+                    <label htmlForhtmlFor="booking-form" className="btn btn-sm btn-circle absolute right-2 top-2">✕</label>
                     <form onSubmit={handleBooking} className='flex flex-col gap-3'>
                         <input name="date" type="text" value={format(date, 'PP')} disabled className="input input-bordered w-full max-w-lg" />
                         <select name="slot" className='select select-bordered w-full max-w-lg'>
@@ -59,11 +60,11 @@ const BookingModal = ({ treatment, date, setTreatment }) => {
                         <input name="email" defaultValue={user?.email} type="email" placeholder='Your Email' disabled className="input input-bordered w-full max-w-lg" required />
                         <input name="phone" type="text" placeholder='Phone Number' className="input input-bordered w-full max-w-lg" required />
                         <p>{error && <span>{error.message}</span>}</p>
-                        <button type="submit" htmlFor="booking-form" className="btn btn-accent uppercase">submit</button>
+                        <button type="submit" htmlForhtmlFor="booking-form" className="btn btn-accent uppercase">submit</button>
                     </form>
                 </div>
-            </div>
-        </div>
+            </div >
+        </div >
     );
 };
 

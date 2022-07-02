@@ -12,7 +12,7 @@ const Service = ({ service, setTreatment }) => {
                     <label onClick={() => setTreatment(service)} htmlFor="booking-form" className="btn btn-secondary uppercase" disabled={slots.length === 0}>Book Appointment</label>
                 </div>
             </div>
-        </div>
+        </div >
     );
 };
 
