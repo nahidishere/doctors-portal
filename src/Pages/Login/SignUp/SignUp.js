@@ -1,11 +1,11 @@
 import React from 'react';
-import { useCreateUserWithEmailAndPassword, useSignInWithGoogle } from 'react-firebase-hooks/auth';
+import { useCreateUserWithEmailAndPassword, useSignInWithGoogle, useUpdateProfile } from 'react-firebase-hooks/auth';
 import { useNavigate } from "react-router-dom";
 import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import auth from '../../../firebase.init';
 import Loading from '../../Shared/Loading/Loading';
-import { updateProfile } from 'firebase/auth';
+import useToken from '../../../hooks/useTokens';
 
 const SignUp = () => {
     let navigate = useNavigate();
@@ -16,6 +16,8 @@ const SignUp = () => {
         loading,
         error,
     ] = useCreateUserWithEmailAndPassword(auth);
+    const [updateProfile, updating, error1] = useUpdateProfile(auth);
+    // Handle Form
     const { register, handleSubmit, watch, reset, formState: { errors } } = useForm();
     const onSubmit = async data => {
         const email = data.email;
@@ -23,14 +25,16 @@ const SignUp = () => {
         await createUserWithEmailAndPassword(email, password);
         await updateProfile({ displayName: data.name })
         reset()
-        navigate("");
     };
     // Continue with google 
     const [signInWithGoogle, gUser, gLoading, gError] = useSignInWithGoogle(auth);
-    if (gLoading || loading) {
+    // Use Token
+    const [token] = useToken(user || gUser);
+    // Loading 
+    if (gLoading || loading || updating) {
         return <Loading />
     }
-    if (user || gUser) {
+    if (token) {
         navigate("/");
     }
     return (

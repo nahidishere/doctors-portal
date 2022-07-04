@@ -1,15 +1,13 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSignInWithEmailAndPassword, useSignInWithGoogle } from 'react-firebase-hooks/auth'
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { Link, useLocation } from 'react-router-dom';
 import auth from '../../../firebase.init';
 import Loading from '../../Shared/Loading/Loading';
+import useToken from '../../../hooks/useTokens';
 
 const Login = () => {
-    let navigate = useNavigate();
-    const location = useLocation();
-    const from = location.state?.from?.pathname || "/";
     // Login with email and password
     const [
         signInWithEmailAndPassword,
@@ -17,21 +15,28 @@ const Login = () => {
         loading,
         error,
     ] = useSignInWithEmailAndPassword(auth);
+    const [signInWithGoogle, gUser, gLoading, gError] = useSignInWithGoogle(auth);
     const { register, handleSubmit, watch, reset, formState: { errors } } = useForm();
+    // Navigate to home 
+    let navigate = useNavigate();
+    const location = useLocation();
+    const from = location.state?.from?.pathname || "/";
+    const [token] = useToken(user || gUser)
+    // Token 
+    useEffect(() => {
+        if (token) {
+            navigate(from, { replace: true });
+        }
+    }, [token, from, navigate])
+    // Handle Form 
     const onSubmit = data => {
-        const email = data.email;
-        const password = data.password;
-        signInWithEmailAndPassword(email, password)
+        signInWithEmailAndPassword(data.email, data.password)
         reset();
     };
     // Continue with google 
-    const [signInWithGoogle, gUser, gLoading, gError] = useSignInWithGoogle(auth);
     if (gLoading || loading) {
         return <Loading />
     };
-    if (user || gUser) {
-        navigate(from, { replace: true });
-    }
     return (
         <div className="flex justify-center items-center h-screen">
             <div className="card w-96 bg-base-100 shadow-xl">
